@@ -186,6 +186,7 @@ const advocateData = [
     yearsOfExperience: 3,
     phoneNumber: 5559872345,
   },
+  ...fakerAdvocates,
 ];
 
 export { advocateData };
