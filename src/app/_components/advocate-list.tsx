@@ -1,4 +1,5 @@
 "use client";
+
 import { useMemo, useState } from "react";
 import { useAdvocatesInfiniteQuery } from "../_queries/fetchAdvocates";
 import { useDebounce } from "react-use";
@@ -18,7 +19,7 @@ export default function AdvocateList() {
     minExperience,
   ]);
 
-  const { data, isLoading, fetchNextPage, hasNextPage } =
+  const { data, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useAdvocatesInfiniteQuery({
       searchTerm: debouncedSearchTerm,
       minExperience: debouncedMinExperience,
@@ -58,8 +59,8 @@ export default function AdvocateList() {
         <span>
           Results: {advocates.length} of {total}
         </span>
-        {isLoading && (
-          <Loader className='w-4 h-4 fixed bottom-10 right-10 animate-spin' />
+        {isFetchingNextPage && (
+          <Loader className='size-10 fixed bottom-10 left-10 animate-spin' />
         )}
       </div>
       <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 container mx-auto mb-12'>
