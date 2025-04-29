@@ -1,6 +1,6 @@
 import AdvocateList from "@/app/_components/advocate-list";
 import { getQueryClient } from "@/app/_lib/get-query-client";
-import { getAdvocatesInfiniteQueryOptions } from "./_queries/fetchAdvocates";
+import { getAdvocatesInfiniteQueryOptions } from "./_queries/fetch-advocates";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function Home() {

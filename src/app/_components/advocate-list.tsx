@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useAdvocatesInfiniteQuery } from "../_queries/fetchAdvocates";
+import { useAdvocatesInfiniteQuery } from "../_queries/fetch-advocates";
 import { useDebounce } from "react-use";
 import { Loader } from "lucide-react";
 
