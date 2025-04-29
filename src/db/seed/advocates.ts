@@ -1,5 +1,6 @@
 import db from "..";
 import { advocates } from "../schema";
+import { faker } from "@faker-js/faker";
 
 const specialties = [
   "Bipolar",
@@ -36,6 +37,18 @@ const randomSpecialty = () => {
 
   return [random1, random2];
 };
+
+const degrees = ["MD", "PhD", "MSW", "MS", "MA"];
+
+const fakerAdvocates = Array.from({ length: 1000 }, () => ({
+  firstName: faker.person.firstName(),
+  lastName: faker.person.lastName(),
+  city: faker.location.city(),
+  degree: degrees[Math.floor(Math.random() * degrees.length)],
+  specialties: specialties.slice(...randomSpecialty()),
+  yearsOfExperience: faker.number.int({ min: 1, max: 20 }),
+  phoneNumber: faker.string.numeric({ length: 10 }),
+}));
 
 const advocateData = [
   {
