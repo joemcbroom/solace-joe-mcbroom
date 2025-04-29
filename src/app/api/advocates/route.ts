@@ -17,13 +17,21 @@ export async function GET(request: Request) {
     ),
     gte(advocates.yearsOfExperience, Number(minExperience))
   );
-
-  const data = await db.select().from(advocates).where(whereClause);
-
-  const [totalResult] = await db
-    .select({ total: count() })
+  const data = await db
+    .select({
+      id: advocates.id,
+      firstName: advocates.firstName,
+      lastName: advocates.lastName,
+      city: advocates.city,
+      degree: advocates.degree,
+      specialties: advocates.specialties,
+      yearsOfExperience: advocates.yearsOfExperience,
+      phoneNumber: advocates.phoneNumber,
+      createdAt: advocates.createdAt,
+      total: sql<number>`count(*) over()`,
+    })
     .from(advocates)
     .where(whereClause);
 
-  return Response.json({ data, total: totalResult.total });
+  return Response.json({ data, total: data[0]?.total ?? 0 });
 }
