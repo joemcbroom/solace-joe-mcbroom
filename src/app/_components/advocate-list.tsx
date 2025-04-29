@@ -1,9 +1,9 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAdvocatesInfiniteQuery } from "../_queries/fetchAdvocates";
 import { useDebounce } from "react-use";
+import { Loader } from "lucide-react";
 
-import AdvocateListItems from "@/app/_components/advocate-list-items";
 import AdvocateListItem from "@/app/_components/advocate-list-items";
 import IntersectionTrigger from "./intersection-trigger";
 
@@ -58,9 +58,9 @@ export default function AdvocateList() {
         <span>
           Results: {advocates.length} of {total}
         </span>
-        {/* {isLoading && (
+        {isLoading && (
           <Loader className='w-4 h-4 fixed bottom-10 right-10 animate-spin' />
-        )} */}
+        )}
       </div>
       <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 container mx-auto mb-12'>
         {advocates.map(advocate => (
