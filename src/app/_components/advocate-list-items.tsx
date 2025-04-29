@@ -1,5 +1,6 @@
 import { type Advocate } from "@/db/schema";
 import { Phone } from "lucide-react";
+import { useEffect } from "react";
 
 const SpecialtyChip = ({ specialty }: { specialty: string }) => {
   return (

@@ -12,15 +12,18 @@
     "seed": "node --loader esbuild-register/loader -r esbuild-register ./src/db/seed/index.ts"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.74.7",
     "drizzle-orm": "^0.32.1",
     "lucide-react": "^0.503.0",
     "next": "^14.2.19",
     "postgres": "^3.4.4",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-use": "^17.6.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.7.0",
+    "@tanstack/react-query-devtools": "^5.74.7",
     "@types/node": "^20.14.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",

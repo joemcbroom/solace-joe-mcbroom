@@ -1,45 +1,36 @@
 "use client";
+import { useEffect, useMemo, useState } from "react";
+import { useAdvocatesInfiniteQuery } from "../_queries/fetchAdvocates";
+import { useDebounce } from "react-use";
 
-import { type Advocate } from "@/db/schema";
-import AdvocateListItem from "@/app/_components/advocate-list-item";
-import { Loader } from "lucide-react";
-import { useCallback, useEffect, useState, useRef } from "react";
-import fetchAdvocates from "../api/fetchAdvocates";
+import AdvocateListItems from "@/app/_components/advocate-list-items";
+import AdvocateListItem from "@/app/_components/advocate-list-items";
+import IntersectionTrigger from "./intersection-trigger";
 
-type AdvocateListProps = {
-  initialAdvocates: Advocate[];
-  initialTotal: number;
-};
-
-export default function AdvocateList({
-  initialAdvocates,
-  initialTotal,
-}: AdvocateListProps) {
+export default function AdvocateList() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [minExperience, setMinExperience] = useState(0);
-  const [advocates, setAdvocates] = useState(initialAdvocates);
-  const [total, setTotal] = useState(initialTotal);
-  const [isLoading, setIsLoading] = useState(false);
-  const isInitialMount = useRef(true);
+  const [debouncedMinExperience, setDebouncedMinExperience] = useState(0);
 
-  const handleSearch = useCallback(async () => {
-    setIsLoading(true);
-    const { advocates, total } = await fetchAdvocates({
-      searchTerm,
-      minExperience,
+  useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm]);
+  useDebounce(() => setDebouncedMinExperience(minExperience), 500, [
+    minExperience,
+  ]);
+
+  const { data, isLoading, fetchNextPage, hasNextPage } =
+    useAdvocatesInfiniteQuery({
+      searchTerm: debouncedSearchTerm,
+      minExperience: debouncedMinExperience,
+      page: 1,
+      limit: 20,
     });
-    setAdvocates(advocates);
-    setTotal(total);
-    setIsLoading(false);
-  }, [searchTerm, minExperience]);
 
-  useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-    handleSearch();
-  }, [handleSearch]);
+  const advocates = useMemo(
+    () => data?.pages.flatMap(page => page.advocates) || [],
+    [data]
+  );
+  const total = useMemo(() => data?.pages[0]?.total || 0, [data]);
 
   return (
     <div className='flex flex-col gap-6'>
@@ -67,14 +58,17 @@ export default function AdvocateList({
         <span>
           Results: {advocates.length} of {total}
         </span>
-        {isLoading && (
+        {/* {isLoading && (
           <Loader className='w-4 h-4 fixed bottom-10 right-10 animate-spin' />
-        )}
+        )} */}
       </div>
       <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 container mx-auto mb-12'>
         {advocates.map(advocate => (
           <AdvocateListItem key={advocate.id} advocate={advocate} />
         ))}
+        {hasNextPage && (
+          <IntersectionTrigger onIntersect={() => fetchNextPage()} />
+        )}
       </div>
     </div>
   );

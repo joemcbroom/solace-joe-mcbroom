@@ -6,6 +6,8 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const searchTerm = url.searchParams.get("searchTerm");
   const minExperience = url.searchParams.get("minExperience");
+  const page = url.searchParams.get("page");
+  const limit = url.searchParams.get("limit");
 
   const search = `%${(searchTerm ?? "").toLowerCase()}%`;
 
@@ -31,7 +33,9 @@ export async function GET(request: Request) {
       total: sql<number>`count(*) over()`,
     })
     .from(advocates)
-    .where(whereClause);
+    .where(whereClause)
+    .limit(Number(limit))
+    .offset((Number(page) - 1) * Number(limit));
 
   return Response.json({ data, total: data[0]?.total ?? 0 });
 }

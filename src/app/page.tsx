@@ -1,15 +1,27 @@
-import fetchAdvocates from "@/app/api/fetchAdvocates";
 import AdvocateList from "@/app/_components/advocate-list";
+import { getQueryClient } from "@/app/_lib/get-query-client";
+import { getAdvocatesInfiniteQueryOptions } from "./_queries/fetchAdvocates";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 export default async function Home() {
-  const { advocates, total } = await fetchAdvocates({
-    searchTerm: "",
-    minExperience: 0,
-  });
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchInfiniteQuery(
+    getAdvocatesInfiniteQueryOptions({
+      searchTerm: "",
+      minExperience: 0,
+      page: 1,
+      limit: 20,
+    })
+  );
+
+  const dehydratedState = dehydrate(queryClient);
 
   return (
-    <main className=''>
-      <AdvocateList initialAdvocates={advocates} initialTotal={total} />
-    </main>
+    <HydrationBoundary state={dehydratedState}>
+      <main className=''>
+        <AdvocateList />
+      </main>
+    </HydrationBoundary>
   );
 }
